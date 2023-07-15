@@ -1,24 +1,21 @@
 import React, { useRef, useEffect } from "react";
 import { dia, shapes } from "jointjs";
 import "./App.css";
+import DragScroll from "./components/drag-scroll";
 
 function App() {
   const canvas: any = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    console.log("!!", canvas.current);
-
     const graph = new dia.Graph();
 
     const paper = new dia.Paper({
       el: canvas.current,
-      width: 600,
-      height: 400,
-      gridSize: 2,
+      width: 6000,
+      height: 4000,
+      gridSize: 20,
+      drawGrid: true,
       model: graph,
-      background: {
-        color: "#F8F9FA",
-      },
       sorting: dia.Paper.sorting.APPROX,
       cellViewNamespace: shapes,
     });
@@ -33,22 +30,54 @@ function App() {
       },
     });
     rect.addTo(graph);
-    console.log("!paper", paper);
-    
+    var rect3 = new shapes.standard.Rectangle();
+    rect3.position(100, 130);
+    rect3.resize(100, 40);
+    rect3.attr({
+      body: {
+        fill: "#E74C3C",
+        rx: 20,
+        ry: 20,
+        strokeWidth: 0,
+      },
+      label: {
+        text: "Hello",
+        fill: "#ECF0F1",
+        fontSize: 11,
+        fontVariant: "small-caps",
+      },
+    });
+    rect3.addTo(graph);
 
-    return () => {
-      console.log("!on return");
-      // scroller.remove();
-      // paper.remove();
-      // paper.unmount();
-    };
+    var rect4 = new shapes.standard.Rectangle();
+    rect4.position(400, 130);
+    rect4.resize(100, 40);
+    rect4.attr({
+      body: {
+        fill: "#8E44AD",
+        strokeWidth: 0,
+      },
+      label: {
+        text: "World!",
+        fill: "white",
+        fontSize: 13,
+      },
+    });
+    rect4.addTo(graph);
+
+
+    var link = new shapes.standard.Link();
+    link.source(rect);
+    link.target(rect3);
+    link.addTo(graph);
+
   }, []);
 
   return (
     <div className="App">
-      <div  className="canvas">
+      <DragScroll className="canvas">
         <div ref={canvas} />
-      </div>
+      </DragScroll>
     </div>
   );
 }
