@@ -16,20 +16,26 @@ type newObject = {
   fontSize?: number;
   textColor?: string;
 };
+type NewElementProps = {
+  label: string;
+  key: string;
+  posX?: number;
+  posY?: number;
+  width?: number;
+  height?: number;
+};
 type JointsStore = {
   graph: dia.Graph<dia.Graph.Attributes, dia.ModelSetOptions>;
   paper: dia.Paper | null;
   isReady: boolean;
   keyMap: Record<ObjectTypeKeys, Record<string, string>>;
   setupCanvas: (element: RefObject<HTMLDivElement>) => void;
-  addRectangle: (args: newObject) => void;
+  addRoom: (args: newObject) => void;
+  addTrigger: (args: NewElementProps) => void;
+  addGamestate: (args: NewElementProps) => void;
+  addItem: (args: NewElementProps) => void;
   addLink: (idA: string, idB: string) => void;
-  //   addLink: () => void;
 };
-
-// func:() => set((state) => {
-//     return {}
-// })
 
 export const useJointsCanvas = create<JointsStore>((set) => ({
   graph: new dia.Graph(),
@@ -38,7 +44,7 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
   keyMap: {
     room: {},
     item: {},
-    state: {},
+    gamestate: {},
     trigger: {},
   },
   setupCanvas: (element: RefObject<HTMLDivElement>) =>
@@ -56,7 +62,7 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
 
       return { isReady: true, paper };
     }),
-  addRectangle: ({
+  addRoom: ({
     posX = 100,
     posY = 100,
     width = 100,
@@ -90,6 +96,93 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
       const room = { ...state.keyMap.room, [key]: rect.id as string };
 
       return { graph: state.graph, keyMap: { ...state.keyMap, room } };
+    }),
+  addTrigger: ({
+    posX = 100,
+    posY = 100,
+    width = 100,
+    height = 50,
+    label = "Unnamed Trigger",
+    key,
+  }) =>
+    set((state) => {
+      const poly = new shapes.erd.Relationship({
+        position: { x: posX, y: posY },
+        size: { width, height },
+        attrs: {
+          label: {
+            text: label,
+            fontSize: 13,
+          },
+        },
+      });
+
+      poly.addTo(state.graph);
+
+      const trigger = { ...state.keyMap.trigger, [key]: poly.id as string };
+
+      return { graph: state.graph, keyMap: { ...state.keyMap, trigger } };
+    }),
+  addGamestate: ({
+    posX = 100,
+    posY = 100,
+    width = 100,
+    height = 50,
+    label = "Unnamed State",
+    key,
+  }) =>
+    set((state) => {
+      const cylinder = new shapes.erd.Entity({
+        position: { x: posX, y: posY },
+        size: { width, height },
+        attrs: {
+          label: {
+            text: label,
+            fontSize: 13,
+            fill: "white",
+          },
+        },
+      });
+
+      cylinder.addTo(state.graph);
+
+      const gamestate = {
+        ...state.keyMap.gamestate,
+        [key]: cylinder.id as string,
+      };
+
+      return { graph: state.graph, keyMap: { ...state.keyMap, gamestate } };
+    }),
+  addItem: ({
+    posX = 100,
+    posY = 100,
+    width = 100,
+    height = 50,
+    label = "Unnamed Item",
+    key,
+  }) =>
+    set((state) => {
+      const ellipse = new shapes.standard.Ellipse({
+        position: { x: posX, y: posY },
+        size: { width, height },
+        attrs: {
+          body: {
+            fill: "purple",
+            strokeWidth: 1,
+          },
+          label: {
+            text: label,
+            fontSize: 13,
+            fill: "white",
+          },
+        },
+      });
+
+      ellipse.addTo(state.graph);
+
+      const item = { ...state.keyMap.item, [key]: ellipse.id as string };
+
+      return { graph: state.graph, keyMap: { ...state.keyMap, item } };
     }),
   addLink: (idA: string, idB: string) =>
     set((state) => {

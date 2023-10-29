@@ -1,1 +1,1 @@
-export type ObjectTypeKeys = "room" | "item" | "state" | "trigger";
+export type ObjectTypeKeys = "room" | "item" | "gamestate" | "trigger";

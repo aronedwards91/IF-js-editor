@@ -11,27 +11,41 @@ function App() {
 
   useEffect(() => {
     state.setupCanvas(canvas);
-    state.addRectangle({
+    state.addRoom({
       label: "test1",
       key: "one",
     });
-    state.addRectangle({
+    state.addGamestate({
       posX: 300,
-      posY: 150,
-      label: "test2",
+      posY: 180,
+      label: "state",
       key: "two",
     });
-
+    state.addTrigger({
+      posX: 300,
+      posY: 200,
+      label: "trigger",
+      key: "three",
+    });
+    state.addItem({
+      posX: 400,
+      posY: 150,
+      label: "item",
+      key: "four",
+    });
   }, []);
 
   useEffect(() => {
     const idA = state.keyMap.room["one"];
-    const idB = state.keyMap.room["two"];
-    if(idA && idB) {
+    const idB = state.keyMap.gamestate["two"];
+    console.log("X", {
+      idA,
+      idB,
+    });
+    if (idA && idB) {
       state.addLink(idA, idB);
     }
-
-  } , [state.keyMap])
+  }, [state.keyMap]);
 
   return (
     <div className="App">
