@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { dia, shapes } from "jointjs";
 import "./App.css";
 import DragScroll from "./components/drag-scroll";
+import Sidebar from "./components/sidebar";
+import AddButton from "./components/buttons/add";
 
 function App() {
   const canvas: any = useRef<HTMLElement>(null);
@@ -65,19 +67,23 @@ function App() {
     });
     rect4.addTo(graph);
 
-
     var link = new shapes.standard.Link();
     link.source(rect);
     link.target(rect3);
     link.addTo(graph);
-
   }, []);
 
   return (
     <div className="App">
-      <DragScroll className="canvas">
-        <div ref={canvas} />
-      </DragScroll>
+      <div className="relative">
+        <div className="absolute">
+          <AddButton />
+        </div>
+        <DragScroll className="canvas">
+          <div ref={canvas} />
+        </DragScroll>
+      </div>
+      <Sidebar />
     </div>
   );
 }

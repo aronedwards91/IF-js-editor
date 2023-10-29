@@ -84,7 +84,6 @@ export default class DragScroll extends React.Component {
     return  object && typeof object==='object' &&
       typeof object.length==='number' &&
       typeof object.splice==='function' &&
-      //判断length属性是否是可枚举的 对于数组 将得到false
       !(object.propertyIsEnumerable('length'));
   }
 }
