@@ -29,6 +29,7 @@ type JointsStore = {
   paper: dia.Paper | null;
   isReady: boolean;
   keyMap: Record<ObjectTypeKeys, Record<string, string>>;
+  iterator: number;
   setupCanvas: (element: RefObject<HTMLDivElement>) => void;
   addRoom: (args: newObject) => void;
   addTrigger: (args: NewElementProps) => void;
@@ -41,6 +42,7 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
   graph: new dia.Graph(),
   paper: null,
   isReady: false,
+  iterator: 1,
   keyMap: {
     room: {},
     item: {},
@@ -95,7 +97,11 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
 
       const room = { ...state.keyMap.room, [key]: rect.id as string };
 
-      return { graph: state.graph, keyMap: { ...state.keyMap, room } };
+      return {
+        graph: state.graph,
+        keyMap: { ...state.keyMap, room },
+        iterator: state.iterator + 1,
+      };
     }),
   addTrigger: ({
     posX = 100,
@@ -121,7 +127,11 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
 
       const trigger = { ...state.keyMap.trigger, [key]: poly.id as string };
 
-      return { graph: state.graph, keyMap: { ...state.keyMap, trigger } };
+      return {
+        graph: state.graph,
+        keyMap: { ...state.keyMap, trigger },
+        iterator: state.iterator + 1,
+      };
     }),
   addGamestate: ({
     posX = 100,
@@ -151,7 +161,11 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
         [key]: cylinder.id as string,
       };
 
-      return { graph: state.graph, keyMap: { ...state.keyMap, gamestate } };
+      return {
+        graph: state.graph,
+        keyMap: { ...state.keyMap, gamestate },
+        iterator: state.iterator + 1,
+      };
     }),
   addItem: ({
     posX = 100,
@@ -182,7 +196,11 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
 
       const item = { ...state.keyMap.item, [key]: ellipse.id as string };
 
-      return { graph: state.graph, keyMap: { ...state.keyMap, item } };
+      return {
+        graph: state.graph,
+        keyMap: { ...state.keyMap, item },
+        iterator: state.iterator + 1,
+      };
     }),
   addLink: (idA: string, idB: string) =>
     set((state) => {

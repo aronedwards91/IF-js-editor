@@ -38,10 +38,6 @@ function App() {
   useEffect(() => {
     const idA = state.keyMap.room["one"];
     const idB = state.keyMap.gamestate["two"];
-    console.log("X", {
-      idA,
-      idB,
-    });
     if (idA && idB) {
       state.addLink(idA, idB);
     }
