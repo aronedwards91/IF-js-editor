@@ -24,12 +24,20 @@ type NewElementProps = {
   width?: number;
   height?: number;
 };
+
+type ItemData = {
+  label: string;
+  type: ObjectTypeKeys;
+  formItems: Record<any, any>;
+};
 type JointsStore = {
   graph: dia.Graph<dia.Graph.Attributes, dia.ModelSetOptions>;
   paper: dia.Paper | null;
   isReady: boolean;
   keyMap: Record<ObjectTypeKeys, Record<string, string>>;
+  dataMap: Record<string, ItemData>;
   iterator: number;
+  sidebar: null | ItemData;
   setupCanvas: (element: RefObject<HTMLDivElement>) => void;
   addRoom: (args: newObject) => void;
   addTrigger: (args: NewElementProps) => void;
@@ -38,7 +46,7 @@ type JointsStore = {
   addLink: (idA: string, idB: string) => void;
 };
 
-export const useJointsCanvas = create<JointsStore>((set) => ({
+export const useJointsCanvas = create<JointsStore>((set, get) => ({
   graph: new dia.Graph(),
   paper: null,
   isReady: false,
@@ -49,6 +57,8 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
     gamestate: {},
     trigger: {},
   },
+  dataMap: {},
+  sidebar: null,
   setupCanvas: (element: RefObject<HTMLDivElement>) =>
     set((state) => {
       const paper = new dia.Paper({
@@ -60,6 +70,12 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
         model: state.graph,
         sorting: dia.Paper.sorting.APPROX,
         cellViewNamespace: shapes,
+      });
+
+      paper.on("cell:pointerdown", function (cellView, evt, x, y) {
+        set((state) => {
+          return { sidebar: state.dataMap[(cellView as any).model.id] };
+        });
       });
 
       return { isReady: true, paper };
@@ -96,10 +112,22 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
       rect.addTo(state.graph);
 
       const room = { ...state.keyMap.room, [key]: rect.id as string };
+      const newDataMap = {
+        ...state.dataMap,
+        [rect.id]: {
+          label: key,
+          type: 'room',
+          formItems: {
+            name: key,
+            description: "add description",
+          },
+        } as ItemData,
+      };
 
       return {
         graph: state.graph,
         keyMap: { ...state.keyMap, room },
+        dataMap: newDataMap,
         iterator: state.iterator + 1,
       };
     }),
@@ -126,10 +154,22 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
       poly.addTo(state.graph);
 
       const trigger = { ...state.keyMap.trigger, [key]: poly.id as string };
+      const newDataMap = {
+        ...state.dataMap,
+        [poly.id]: {
+          label: key,
+          type: 'trigger',
+          formItems: {
+            name: key,
+            returnString: "return string",
+          },
+        } as ItemData,
+      };
 
       return {
         graph: state.graph,
         keyMap: { ...state.keyMap, trigger },
+        dataMap: newDataMap,
         iterator: state.iterator + 1,
       };
     }),
@@ -160,10 +200,22 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
         ...state.keyMap.gamestate,
         [key]: cylinder.id as string,
       };
+      const newDataMap = {
+        ...state.dataMap,
+        [cylinder.id]: {
+          label: key,
+          type: 'gamestate',
+          formItems: {
+            name: key,
+            onPass: "special string",
+          },
+        } as ItemData,
+      };
 
       return {
         graph: state.graph,
         keyMap: { ...state.keyMap, gamestate },
+        dataMap: newDataMap,
         iterator: state.iterator + 1,
       };
     }),
@@ -195,10 +247,22 @@ export const useJointsCanvas = create<JointsStore>((set) => ({
       ellipse.addTo(state.graph);
 
       const item = { ...state.keyMap.item, [key]: ellipse.id as string };
+      const newDataMap = {
+        ...state.dataMap,
+        [ellipse.id]: {
+          label: key,
+          type: 'item',
+          formItems: {
+            name: key,
+            description: "add Item description",
+          },
+        } as ItemData,
+      };
 
       return {
         graph: state.graph,
         keyMap: { ...state.keyMap, item },
+        dataMap: newDataMap,
         iterator: state.iterator + 1,
       };
     }),

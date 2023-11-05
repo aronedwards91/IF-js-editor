@@ -33,7 +33,7 @@ export default function AddButton() {
       posY,
     });
   };
-  const handleGamestate = () => {
+  const handleAddGamestate = () => {
     const { posX, posY } = getPos(paper);
 
     addGamestate({
@@ -43,7 +43,7 @@ export default function AddButton() {
       posY,
     });
   };
-  const handleItem = () => {
+  const handleAddItem = () => {
     const { posX, posY } = getPos(paper);
 
     addItem({
@@ -53,7 +53,7 @@ export default function AddButton() {
       posY,
     });
   };
-  const handleTrigger= () => {
+  const handleAddTrigger= () => {
     const { posX, posY } = getPos(paper);
 
     addTrigger({
@@ -75,9 +75,9 @@ export default function AddButton() {
         {isExpanded && (
           <div className="flex flex-col">
             <button onClick={handleAddRoom}>Add Room</button>
-            <button onClick={handleGamestate}>Add Gamestate</button>
-            <button onClick={handleItem}>Add Item</button>
-            <button onClick={handleTrigger}>Add Trigger</button>
+            <button onClick={handleAddGamestate}>Add Gamestate</button>
+            <button onClick={handleAddItem}>Add Item</button>
+            <button onClick={handleAddTrigger}>Add Trigger</button>
           </div>
         )}
       </div>
