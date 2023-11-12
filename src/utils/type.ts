@@ -1,6 +1,6 @@
 export type ObjectTypeKeys = "room" | "item" | "gamestate" | "trigger";
 
-enum Directions {
+export enum Directions {
   UP = "up",
   DOWN = "down",
   N = "n",
@@ -15,7 +15,7 @@ enum Directions {
 
 type RoomID = string;
 
-enum BaseInteractions {
+export enum BaseInteractions {
   Examine = "examine",
   Take = "take",
   Place = "place",
@@ -32,7 +32,7 @@ enum BaseInteractions {
   Combine = "combine",
 }
 
-type DirectionsOptions = Record<Directions | string, RoomID | StateCheck>;
+export type DirectionsOptions = Record<Directions | string, RoomID | StateCheck>;
 
 // type RoomID = string;
 // type TriggerID = string;
